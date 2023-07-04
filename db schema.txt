@@ -1,0 +1,16 @@
+users
+  id
+  name
+  email
+  created_at
+
+meals
+  id
+  name
+  description
+  date
+  hour
+  is_on_diet
+  user_id
+  created_at
+  
