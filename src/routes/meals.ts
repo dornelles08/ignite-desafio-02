@@ -3,7 +3,7 @@ import { z } from "zod";
 import { checkSessionId } from "../middlewares/check-session-id";
 import { knex } from "../databse";
 import { randomUUID } from "crypto";
-import ConvertIsOnDietToBoolena from "../utils/convert-is_on_diet-to-boolean";
+import ConvertIsInDietToBoolena from "../utils/convert-is_in_diet-to-boolean";
 
 export default async function MealsRoutes(app: FastifyInstance) {
   app.get(
@@ -16,7 +16,7 @@ export default async function MealsRoutes(app: FastifyInstance) {
 
       const meals = await knex("meals").where({ user_id: sessionId }).select();
 
-      return { meals: meals.map(ConvertIsOnDietToBoolena) };
+      return { meals: meals.map(ConvertIsInDietToBoolena) };
     }
   );
 
@@ -33,10 +33,10 @@ export default async function MealsRoutes(app: FastifyInstance) {
         description: z.string(),
         date: z.string(),
         hour: z.string(),
-        is_on_diet: z.boolean(),
+        is_in_diet: z.boolean(),
       });
 
-      const { name, description, date, hour, is_on_diet } =
+      const { name, description, date, hour, is_in_diet } =
         createBodySchema.parse(request.body);
 
       await knex("meals").insert({
@@ -45,7 +45,7 @@ export default async function MealsRoutes(app: FastifyInstance) {
         description,
         date,
         hour,
-        is_on_diet,
+        is_in_diet,
         user_id: sessionId,
       });
 
@@ -79,7 +79,7 @@ export default async function MealsRoutes(app: FastifyInstance) {
         return replay.status(404).send({ message: "Meal not found" });
       }
 
-      return { meal: ConvertIsOnDietToBoolena(meal) };
+      return { meal: ConvertIsInDietToBoolena(meal) };
     }
   );
 
@@ -92,15 +92,15 @@ export default async function MealsRoutes(app: FastifyInstance) {
       const { sessionId } = request.cookies;
 
       let meals = await knex("meals").where({ user_id: sessionId }).select();
-      meals = meals.map(ConvertIsOnDietToBoolena);
+      meals = meals.map(ConvertIsInDietToBoolena);
 
-      const on_diet = meals.filter(({ is_on_diet }) => is_on_diet === true);
+      const in_diet = meals.filter(({ is_in_diet }) => is_in_diet === true);
 
       return {
         metrics: {
           total: meals.length,
-          on_diet: on_diet.length,
-          off_diet: meals.length - on_diet.length,
+          in_diet: in_diet.length,
+          off_diet: meals.length - in_diet.length,
           better_sequence: "",
         },
       };
@@ -138,10 +138,10 @@ export default async function MealsRoutes(app: FastifyInstance) {
         description: z.string().nullish(),
         date: z.string().nullish(),
         hour: z.string().nullish(),
-        is_on_diet: z.boolean().nullish(),
+        is_in_diet: z.boolean().nullish(),
       });
 
-      const { date, description, hour, is_on_diet, name } =
+      const { date, description, hour, is_in_diet, name } =
         updateBodySchema.parse(request.body);
 
       await knex("meals")
@@ -153,7 +153,7 @@ export default async function MealsRoutes(app: FastifyInstance) {
           date: date ? date : undefined,
           description: description ? description : undefined,
           hour: hour ? hour : undefined,
-          is_on_diet: is_on_diet ? is_on_diet : undefined,
+          is_in_diet: is_in_diet ? is_in_diet : undefined,
           name: name ? name : undefined,
         });
 

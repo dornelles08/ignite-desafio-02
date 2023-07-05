@@ -6,6 +6,7 @@ declare module "knex/types/tables" {
       id: string;
       name: string;
       email: string;
+      password: string;
       created_at: string;
     };
     meals: {
@@ -14,7 +15,7 @@ declare module "knex/types/tables" {
       description: string;
       date: string;
       hour: string;
-      is_on_diet: boolean;
+      is_in_diet: boolean;
       created_at: string;
       user_id: string;
     };
