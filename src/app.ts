@@ -2,6 +2,7 @@ import fastify from "fastify";
 import fastifyCookie from "@fastify/cookie";
 import MealsRoutes from "./routes/meals";
 import UsersRoute from "./routes/users";
+import LoginRoutes from "./routes/login";
 
 export const app = fastify();
 
@@ -13,3 +14,4 @@ app.addHook("preHandler", async (request, replay) => {
 
 app.register(MealsRoutes, { prefix: "meals" });
 app.register(UsersRoute, { prefix: "users" });
+app.register(LoginRoutes, { prefix: "login" });
